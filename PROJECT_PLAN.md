@@ -1,5 +1,7 @@
 # Kế Hoạch Triển Khai: SixDegreesOfWiki - Hệ Thống Phân Tích Mức Độ Liên Kết Wikipedia Bằng Iterative Deepening Search (IDS)
 
+> **Ghi chú cập nhật 07/11/2026:** Đây là kế hoạch gốc. Hệ thống hiện dùng SQLite làm CSDL duy nhất; các mô tả MySQL/fallback dưới đây chỉ còn giá trị lịch sử. Xem [README.md](README.md) và [PROGRESS.md](PROGRESS.md) để biết trạng thái mã nguồn.
+
 > [!NOTE]
 > Dự án giải quyết bài toán kinh điển **Six Degrees of Wikipedia** (Tìm khoảng cách phân tách giữa 2 khái niệm bất kỳ trên bách khoa toàn thư Wikipedia) thông qua giải thuật **Iterative Deepening Search (IDS)** và biến thể tối ưu **Bidirectional IDS**, kết hợp lưu trữ đệm **MySQL** và giao diện trực quan **Streamlit**.
 
