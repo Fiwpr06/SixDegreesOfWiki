@@ -14,12 +14,12 @@ class AppTests(unittest.TestCase):
     def test_initial_page_and_direct_path(self):
         app_path = Path(__file__).resolve().parents[1] / "app.py"
         def links(_wiki, title, _lang, direction, check=None):
-            return ["Python (programming language)"] if direction == "backward" and title == "ADMB" else []
+            return ["ADMB"] if direction == "forward" and title == "Python (programming language)" else []
 
         with patch.dict(os.environ, {"SQLITE_PATH": str(app_path.parent / ".test_app.db")}), \
              patch.object(WikiAPI, "resolve_title", side_effect=lambda title, lang: title) as resolve, \
              patch.object(WikiAPI, "suggest_titles", return_value=[]), \
-             patch.object(WikiAPI, "get_links", autospec=True, side_effect=links):
+             patch.object(WikiAPI, "iter_links", autospec=True, side_effect=links):
             app = AppTest.from_file(str(app_path), default_timeout=20).run()
             self.assertFalse(app.exception)
             app.toggle[0].set_value(True).run()
