@@ -86,6 +86,9 @@ def main() -> None:
     settings = Settings.from_env()
     database = get_database()
 
+    current_theme = st.session_state.get("app_theme_selection", "cosmic")
+    st.html(global_theme_css(current_theme))
+
     st.title("Six Degrees of Wiki")
     st.caption("Tìm đường liên kết ngắn nhất giữa hai bài Wikipedia bằng Iterative Deepening Search")
 

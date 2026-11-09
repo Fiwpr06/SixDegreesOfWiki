@@ -180,28 +180,99 @@ def global_theme_css(theme_name: str = "cosmic") -> str:
         font-weight: 700 !important;
     }}
 
-    /* Input Fields & Selectboxes */
-    div[data-testid="stTextInput"] input,
-    div[data-testid="stNumberInput"] input {{
-        background-color: {theme['input_bg']} !important;
-        color: {theme['text']} !important;
-        border: 1px solid {theme['border']} !important;
-        border-radius: 8px !important;
-    }}
-    div[data-baseweb="select"] > div {{
+    /* Input Fields, Selectboxes & Number Controls */
+    div[data-testid="stTextInput"] > div,
+    div[data-testid="stTextInput"] input {{
         background-color: {theme['input_bg']} !important;
         color: {theme['text']} !important;
         border-color: {theme['border']} !important;
         border-radius: 8px !important;
     }}
+
+    /* Selectbox Wrapper, Container & Content */
+    div[data-testid="stSelectbox"] > div,
+    div[data-testid="stSelectbox"] [role="combobox"],
+    div[data-testid="stSelectbox"] div[data-focus-within],
+    div[data-testid="stSelectbox"] .react-aria-Group,
+    div[data-baseweb="select"] > div {{
+        background-color: {theme['input_bg']} !important;
+        color: {theme['text']} !important;
+        border: 1px solid {theme['border']} !important;
+        border-radius: 8px !important;
+    }}
+    div[data-testid="stSelectbox"] input,
+    div[data-testid="stSelectbox"] span,
+    div[data-testid="stSelectbox"] p,
+    div[data-testid="stSelectbox"] div,
     div[data-baseweb="select"] * {{
         color: {theme['text']} !important;
     }}
-    div[data-baseweb="popover"] ul {{
+    div[data-testid="stSelectbox"] svg {{
+        fill: {theme['text']} !important;
+        color: {theme['text']} !important;
+    }}
+
+    /* Dropdown Popover / Options List */
+    ul[role="listbox"],
+    [data-baseweb="popover"] ul,
+    div[data-baseweb="popover"] ul,
+    div[data-testid="stSelectbox"] ul,
+    div[data-testid="stSelectboxVirtualDropdown"],
+    div[data-testid="stSelectboxVirtualDropdown"] ul,
+    [data-testid="stSelectbox"] [role="listbox"] {{
         background-color: {theme['card_bg']} !important;
         border: 1px solid {theme['border']} !important;
+        color: {theme['text']} !important;
+        border-radius: 8px !important;
     }}
-    div[data-baseweb="popover"] li {{
+    li[role="option"],
+    [data-baseweb="popover"] li,
+    div[data-baseweb="popover"] li,
+    div[data-testid="stSelectboxVirtualDropdown"] div,
+    div[data-testid="stSelectboxVirtualDropdown"] li,
+    [role="option"] {{
+        background-color: {theme['card_bg']} !important;
+        color: {theme['text']} !important;
+    }}
+    li[role="option"]:hover,
+    [role="option"][aria-selected="true"],
+    [role="option"][data-focused="true"],
+    [role="option"][data-hovered="true"],
+    div[data-testid="stSelectboxVirtualDropdown"] div[data-hovered="true"],
+    div[data-testid="stSelectboxVirtualDropdown"] div[aria-selected="true"] {{
+        background-color: {theme['start_bg']} !important;
+        color: {theme['primary']} !important;
+    }}
+
+    /* NumberInput Container, Input & Stepper Buttons (- / +) */
+    div[data-testid="stNumberInput"] > div,
+    div[data-testid="stNumberInput"] div[data-focus-within],
+    div[data-testid="stNumberInput"] .react-aria-Group {{
+        background-color: {theme['input_bg']} !important;
+        border: 1px solid {theme['border']} !important;
+        border-radius: 8px !important;
+    }}
+    div[data-testid="stNumberInput"] input {{
+        background-color: {theme['input_bg']} !important;
+        color: {theme['text']} !important;
+        border: none !important;
+    }}
+    div[data-testid="stNumberInput"] button {{
+        background-color: {theme['input_bg']} !important;
+        color: {theme['text']} !important;
+        border: none !important;
+        border-left: 1px solid {theme['border']} !important;
+    }}
+    div[data-testid="stNumberInput"] button:hover {{
+        background-color: {theme['card_bg']} !important;
+    }}
+    div[data-testid="stNumberInput"] button svg {{
+        fill: {theme['text']} !important;
+        color: {theme['text']} !important;
+    }}
+
+    /* Slider styling */
+    div[data-testid="stSlider"] * {{
         color: {theme['text']} !important;
     }}
 
