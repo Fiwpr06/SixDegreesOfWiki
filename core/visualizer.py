@@ -1,4 +1,4 @@
-"""Render bounded interactive PyVis graph and connected path stepper with custom SVG icons."""
+"""Render bounded interactive PyVis graph, connected path stepper and global themes with custom SVG icons."""
 
 from html import escape
 import json
@@ -8,6 +8,8 @@ from pyvis.network import Network
 from utils.exporter import article_url
 from .search_types import SearchResult
 
+
+# Custom vector icons representing specific functional roles
 SVG_START = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>'
 SVG_MID = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>'
 SVG_TARGET = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>'
@@ -178,99 +180,28 @@ def global_theme_css(theme_name: str = "cosmic") -> str:
         font-weight: 700 !important;
     }}
 
-    /* Input Fields, Selectboxes & Number Controls */
-    div[data-testid="stTextInput"] > div,
-    div[data-testid="stTextInput"] input {{
+    /* Input Fields & Selectboxes */
+    div[data-testid="stTextInput"] input,
+    div[data-testid="stNumberInput"] input {{
+        background-color: {theme['input_bg']} !important;
+        color: {theme['text']} !important;
+        border: 1px solid {theme['border']} !important;
+        border-radius: 8px !important;
+    }}
+    div[data-baseweb="select"] > div {{
         background-color: {theme['input_bg']} !important;
         color: {theme['text']} !important;
         border-color: {theme['border']} !important;
         border-radius: 8px !important;
     }}
-
-    /* Selectbox Wrapper, Container & Content */
-    div[data-testid="stSelectbox"] > div,
-    div[data-testid="stSelectbox"] [role="combobox"],
-    div[data-testid="stSelectbox"] div[data-focus-within],
-    div[data-testid="stSelectbox"] .react-aria-Group,
-    div[data-baseweb="select"] > div {{
-        background-color: {theme['input_bg']} !important;
-        color: {theme['text']} !important;
-        border: 1px solid {theme['border']} !important;
-        border-radius: 8px !important;
-    }}
-    div[data-testid="stSelectbox"] input,
-    div[data-testid="stSelectbox"] span,
-    div[data-testid="stSelectbox"] p,
-    div[data-testid="stSelectbox"] div,
     div[data-baseweb="select"] * {{
         color: {theme['text']} !important;
     }}
-    div[data-testid="stSelectbox"] svg {{
-        fill: {theme['text']} !important;
-        color: {theme['text']} !important;
-    }}
-
-    /* Dropdown Popover / Options List */
-    ul[role="listbox"],
-    [data-baseweb="popover"] ul,
-    div[data-baseweb="popover"] ul,
-    div[data-testid="stSelectbox"] ul,
-    div[data-testid="stSelectboxVirtualDropdown"],
-    div[data-testid="stSelectboxVirtualDropdown"] ul,
-    [data-testid="stSelectbox"] [role="listbox"] {{
+    div[data-baseweb="popover"] ul {{
         background-color: {theme['card_bg']} !important;
         border: 1px solid {theme['border']} !important;
-        color: {theme['text']} !important;
-        border-radius: 8px !important;
     }}
-    li[role="option"],
-    [data-baseweb="popover"] li,
-    div[data-baseweb="popover"] li,
-    div[data-testid="stSelectboxVirtualDropdown"] div,
-    div[data-testid="stSelectboxVirtualDropdown"] li,
-    [role="option"] {{
-        background-color: {theme['card_bg']} !important;
-        color: {theme['text']} !important;
-    }}
-    li[role="option"]:hover,
-    [role="option"][aria-selected="true"],
-    [role="option"][data-focused="true"],
-    [role="option"][data-hovered="true"],
-    div[data-testid="stSelectboxVirtualDropdown"] div[data-hovered="true"],
-    div[data-testid="stSelectboxVirtualDropdown"] div[aria-selected="true"] {{
-        background-color: {theme['start_bg']} !important;
-        color: {theme['primary']} !important;
-    }}
-
-    /* NumberInput Container, Input & Stepper Buttons (- / +) */
-    div[data-testid="stNumberInput"] > div,
-    div[data-testid="stNumberInput"] div[data-focus-within],
-    div[data-testid="stNumberInput"] .react-aria-Group {{
-        background-color: {theme['input_bg']} !important;
-        border: 1px solid {theme['border']} !important;
-        border-radius: 8px !important;
-    }}
-    div[data-testid="stNumberInput"] input {{
-        background-color: {theme['input_bg']} !important;
-        color: {theme['text']} !important;
-        border: none !important;
-    }}
-    div[data-testid="stNumberInput"] button {{
-        background-color: {theme['input_bg']} !important;
-        color: {theme['text']} !important;
-        border: none !important;
-        border-left: 1px solid {theme['border']} !important;
-    }}
-    div[data-testid="stNumberInput"] button:hover {{
-        background-color: {theme['card_bg']} !important;
-    }}
-    div[data-testid="stNumberInput"] button svg {{
-        fill: {theme['text']} !important;
-        color: {theme['text']} !important;
-    }}
-
-    /* Slider styling */
-    div[data-testid="stSlider"] * {{
+    div[data-baseweb="popover"] li {{
         color: {theme['text']} !important;
     }}
 
@@ -521,10 +452,19 @@ def path_stepper_html(result: SearchResult, theme_name: str = "cosmic") -> str:
     """
 
 
-
 def graph_html(result: SearchResult, theme_name: str = "cosmic") -> str:
-    graph = Network(height="540px", width="100%", directed=True, cdn_resources="in_line")
-    graph.barnes_hut()
+    """Render an interactive PyVis graph with theme matching and node click-to-wiki."""
+    theme = THEMES.get(theme_name, THEMES["cosmic"])
+
+    graph = Network(
+        height="540px",
+        width="100%",
+        directed=True,
+        bgcolor=theme["canvas_bg"],
+        font_color=theme["text"],
+        cdn_resources="in_line"
+    )
+
     path = result.path
     path_edges = set(zip(path, path[1:]))
     edges = set(result.edges) | path_edges
@@ -532,19 +472,118 @@ def graph_html(result: SearchResult, theme_name: str = "cosmic") -> str:
     for source, target in edges:
         nodes.add(source)
         nodes.add(target)
+
+    # URL dictionary for client-side click event
+    url_map = {node: article_url(node, result.lang) for node in nodes}
+
     for node in nodes:
         if node == result.start:
-            color, size = "#2563eb", 28
+            color = {
+                "background": theme["start_node"],
+                "border": theme["start_border"],
+                "highlight": {"background": theme["start_node"], "border": "#ffffff"},
+            }
+            size = 30
         elif node == result.target:
-            color, size = "#f97316", 28
+            color = {
+                "background": theme["target_node"],
+                "border": theme["target_border"],
+                "highlight": {"background": theme["target_node"], "border": "#ffffff"},
+            }
+            size = 30
         elif node in path:
-            color, size = "#22c55e", 23
+            color = {
+                "background": theme["mid_node"],
+                "border": theme["mid_border"],
+                "highlight": {"background": theme["mid_node"], "border": "#ffffff"},
+            }
+            size = 24
         else:
-            color, size = "#cbd5e1", 12
-        graph.add_node(node, label=node, title=escape(node), color=color, size=size)
+            color = {
+                "background": theme["other_node"],
+                "border": theme["other_border"],
+                "highlight": {"background": theme["other_node"], "border": "#ffffff"},
+            }
+            size = 14
+
+        escaped = escape(node)
+        tooltip = (
+            f"<div style='font-family: sans-serif; padding: 4px;'>"
+            f"<b>{escaped}</b><br>"
+            f"<span style='color: {theme['primary']};'>Nhấp để mở bài trên Wikipedia</span>"
+            f"</div>"
+        )
+
+        graph.add_node(
+            node,
+            label=node,
+            title=tooltip,
+            color=color,
+            size=size,
+            font={"color": theme["text"], "size": 13, "face": "sans-serif"},
+            borderWidth=2,
+        )
+
     for source, target in edges:
         highlight = (source, target) in path_edges
-        graph.add_edge(source, target, color="#16a34a" if highlight else "#cbd5e1",
-                       width=4 if highlight else 1, arrows="to")
-    return graph.generate_html(notebook=False)
+        graph.add_edge(
+            source,
+            target,
+            color=theme["path_edge"] if highlight else theme["other_edge"],
+            width=3.5 if highlight else 1,
+            arrows="to",
+            smooth={"type": "cubicBezier", "roundness": 0.15} if highlight else {"type": "continuous"},
+        )
 
+    # Set stable, compact physics options
+    options = {
+        "physics": {
+            "barnesHut": {
+                "gravitationalConstant": -2800,
+                "centralGravity": 0.35,
+                "springLength": 130,
+                "springConstant": 0.04,
+                "damping": 0.1,
+                "avoidOverlap": 0.2,
+            },
+            "stabilization": {"iterations": 250, "updateInterval": 25},
+        },
+        "interaction": {
+            "hover": True,
+            "zoomView": True,
+            "dragView": True,
+            "dragNodes": True,
+            "tooltipDelay": 80,
+        },
+    }
+    graph.set_options(json.dumps(options))
+
+    html = graph.generate_html(notebook=False)
+
+    # Inject click-to-wiki JavaScript
+    url_json = json.dumps(url_map, ensure_ascii=False)
+    injection = f"""
+    network = new vis.Network(container, data, options);
+    var articleUrls = {url_json};
+    network.on("click", function(params) {{
+        if (params.nodes && params.nodes.length > 0) {{
+            var clickedNode = params.nodes[0];
+            var targetUrl = articleUrls[clickedNode];
+            if (targetUrl) {{
+                window.open(targetUrl, "_blank");
+            }}
+        }}
+    }});
+    """
+
+    html = html.replace("network = new vis.Network(container, data, options);", injection, 1)
+
+    # Replace container styling with theme-based borders
+    old_border = "border: 1px solid lightgray;"
+    new_border = f"border: 1px solid {theme['border']}; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.18);"
+    html = html.replace(old_border, new_border, 1)
+
+    # Ensure card wrapper is transparent
+    html = html.replace('<div class="card" style="width: 100%">', '<div class="card" style="width: 100%; background: transparent; border: none;">', 1)
+
+    return html
