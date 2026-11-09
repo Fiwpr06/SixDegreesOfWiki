@@ -1,18 +1,21 @@
 # Tiến độ SixDegreesOfWiki
 
-Cập nhật: 07/11/2026 (giờ Việt Nam)
+Cập nhật: 09/11/2026 (giờ Việt Nam)
 
 | Hạng mục | Trạng thái | Bằng chứng |
 | --- | --- | --- |
 | SQLite và cache MediaWiki | Hoàn thành | Schema, nâng cấp DB cũ, cache links/backlinks có TTL, phân trang và lọc namespace 0. |
-| Standard IDS | Hoàn thành | Kiểm thử đường ngắn nhất, chu trình, độ sâu, timeout và giới hạn nút. |
+| Standard IDS | Hoàn thành | Kiểm thử đường ngắn nhất, chu trình, độ sâu, timeout và giới hạn nút; ghi nhận giới hạn tổ hợp trên nhánh lớn. |
 | Bidirectional IDS | Hoàn thành | Duyệt xuôi/ngược theo cạnh có hướng; kiểm tra giao điểm ngay khi duyệt, đọc backlinks theo trang và dùng lại mức sâu phía xuôi. |
-| Giao diện Streamlit | Hoàn thành | Form, gợi ý bài viết, thiết lập tìm kiếm, chỉ số, so sánh và đồ thị PyVis. |
+| Giao diện & Hệ thống 4 Theme | Hoàn thành | 4 Theme (Cosmic, NieR, Cyberpunk, Paper), tiêm CSS toàn diện, khắc phục triệt để lỗi ô nhập đen trên nền sáng ở Streamlit 1.65. |
+| Thanh hành trình & Icon SVG | Hoàn thành | Connected Path Stepper dùng bộ vector SVG tự vẽ, thay thế emoji trang trí ngẫu nhiên. |
+| Đồ thị PyVis Click-to-Wiki | Hoàn thành | Ổn định lực vật lý Barnes-Hut, phân màu nút/cạnh theo theme, nhấp chuột vào nút mở bài Wikipedia trong tab mới. |
 | Lịch sử và báo cáo | Hoàn thành | Lưu các lượt tìm kiếm, lọc lịch sử, tải báo cáo JSON. |
 
 ## Xác minh
 
-- Bộ kiểm thử tự động: 22/22 bài qua, gồm API, thuật toán, chế độ không giới hạn, nhận URL có dấu `_`, nâng cấp SQLite, lịch sử, JSON và Streamlit AppTest. Thuật toán còn được đối chiếu với BFS trên 30 đồ thị có hướng nhỏ.
+- Bộ kiểm thử tự động: **22/22 bài qua** (`Ran 22 tests - OK`), gồm API, thuật toán, chế độ không giới hạn, nhận URL có dấu `_`, nâng cấp SQLite, lịch sử, JSON và Streamlit AppTest.
+- Hoàn thành kiểm chứng thực nghiệm trên Wikipedia tiếng Việt: `Võ Nguyên Giáp → Siêu tân tinh` (độ sâu 2 qua bài `Vật lý học`, liên kết alias `[[vật lý học|lý]]`). Bidirectional IDS tìm thấy thành công sau **627 nút thăm** trong **0,53s**. Standard IDS bộc lộ rõ giới hạn bùng nổ tổ hợp của DFS đơn hướng (nhánh nằm sau hơn 480 bài viết khác, cần >133.000 nút).
 - Đã gỡ bước kiểm tra nhanh đường 1–2 cạnh; Standard IDS và Bidirectional IDS tự duyệt từng mức độ sâu. Đã thêm tùy chọn không giới hạn ba ngưỡng tìm kiếm trong giao diện.
 - Đã thêm khung tiến trình trực tiếp với sự kiện được lấy mẫu: mức sâu, phía xuôi/ngược, bài hiện tại, số nút thăm/mở rộng, cache hit/miss và thời gian. Việc ghi nhận không đổi thứ tự duyệt.
 - Tìm đường bằng dữ liệu cache MediaWiki thật: `Python (programming language) → ADMB`, độ sâu 1, bằng cả hai thuật toán.

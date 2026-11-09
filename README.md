@@ -16,9 +16,11 @@ README này dành cho thành viên muốn chạy, kiểm thử hoặc sửa mã.
 
 - Nhập tiêu đề hoặc dán URL bài viết (`https://en.wikipedia.org/wiki/World_War_II`), nhận gợi ý tiêu đề và xác thực bài viết thuộc namespace 0. Ngôn ngữ của URL được nhận diện tự động.
 - Chạy từng thuật toán hoặc so sánh cả hai; chọn giới hạn độ sâu, thời gian, số trạng thái thăm hoặc bật chế độ không giới hạn.
+- Tùy biến **4 phong cách hiển thị (Themes)**: *Cosmic Deep Space (Tối vũ trụ)*, *NieR: Automata (Sáng hoài niệm / YoRHa)*, *Cyberpunk Slate (Tối công nghệ)*, *Clean Paper (Sáng tối giản)*, tự động tiêm CSS động can thiệp toàn bộ trang và thanh điều khiển.
+- Hiển thị đường đi bằng **Thanh hành trình liên kết (Connected Path Stepper)** với bộ biểu tượng vector SVG tự thiết kế (Khởi hành, Bước chuyển tiếp, Đích đến, Mũi tên dẫn hướng, Mở liên kết ngoài).
+- Trực quan hóa **Đồ thị tương tác PyVis / Vis.js** với thuật toán ổn định lực vật lý Barnes-Hut, phân biệt màu sắc nút theo theme, và tính năng **Click-to-Wiki** (nhấp vào bất kỳ nút nào trên đồ thị hoặc hành trình đều mở ngay bài viết trên Wikipedia trong tab mới).
 - Xem đường đi, số bài trung gian, thời gian, nút đã thăm, nút mở rộng và tỷ lệ cache hit.
 - Theo dõi trực tiếp mức sâu, chiều duyệt, bài đang xử lý, số nút và cache khi thuật toán chạy. Giao diện lấy mẫu sự kiện khoảng 4 lần/giây để tránh làm chậm tìm kiếm; đây không phải nhật ký của mọi nút. Thời gian dựng khung tiến trình được trừ khỏi thời gian tìm kiếm báo cáo.
-- Xem đồ thị tương tác PyVis với đường đi được tô nổi bật.
 - Xem lịch sử tìm kiếm trong SQLite và tải báo cáo JSON của kết quả hiện tại hoặc phiên cũ.
 
 Các trạng thái kết quả:
@@ -130,6 +132,33 @@ flowchart TD
 | `core/search_types.py` | `SearchLimits`, `SearchResult`, `SearchProgress`, `SearchTracker`. | Đây là nơi xác định trạng thái, đếm nút và trừ thời gian dựng giao diện khỏi số giây tìm kiếm. |
 
 Bidirectional IDS đọc liên kết qua `WikiAPI.iter_links()`, nên có thể dừng khi một trang API vừa trả về điểm giao. Danh sách mới chỉ được ghi cache **sau khi đọc hết**; nếu tìm thấy sớm thì phần đã đọc dở không trở thành một cache thiếu dữ liệu. Standard IDS dùng `get_links()` để nhận danh sách đầy đủ. Hai thuật toán không được cấp trước bài trung gian hay dùng heuristic theo tên bài.
+
+### Nghiên cứu thực nghiệm & Phân tích giới hạn: Case study Võ Nguyên Giáp → Siêu tân tinh
+
+Một trong những phát hiện thực nghiệm quan trọng của dự án là việc kiểm chứng giới hạn lý thuyết của Standard IDS đối với đồ thị phân nhánh thế giới thực:
+
+* **Bài toán thử nghiệm**: Tìm đường đi từ `Võ Nguyên Giáp` đến `Siêu tân tinh` trên Wikipedia tiếng Việt (`vi`).
+* **Đường đi thực tế**: `Võ Nguyên Giáp → Vật lý học → Siêu tân tinh` (Độ sâu 2, qua 1 bài trung gian).
+  * *Lưu ý về liên kết bí danh (Alias link)*: Trên bài viết Wikipedia [Võ Nguyên Giáp](https://vi.wikipedia.org/wiki/V%C3%B5_Nguy%C3%AAn_Gi%C3%A1p), phần tiểu sử gia đình có đoạn: *"...Võ Hồng Anh là một giáo sư, tiến sĩ khoa học ngành **Toán - lý** đã từng đoạt giải thưởng Kovalevskaia..."*. Mã nguồn wikitext thực tế là `[[vật lý học|lý]]`. Do đó, người dùng bấm `Ctrl + F` tìm "Vật lý học" trên trình duyệt sẽ không thấy, nhưng nhấp chuột vào chữ `"lý"` sẽ điều hướng trực tiếp đến bài `Vật lý học`. Từ bài `Vật lý học`, liên kết trỏ thẳng tới `Siêu tân tinh`.
+* **Kết quả so sánh giữa hai thuật toán**:
+  * **Bidirectional IDS**: Tìm thấy ngay đường đi ở độ sâu 2 chỉ sau **627 nút thăm** và **0,53 giây**. Phía xuôi duyệt $d=1$ lấy 621 liên kết của `Võ Nguyên Giáp` (trong đó có `Vật lý học`); phía ngược duyệt $d=1$ từ `Siêu tân tinh` phát hiện ngay điểm giao `Vật lý học`.
+  * **Standard IDS**: Bị dừng cưỡng bức (`status = "node_limit"` hoặc `"timeout"`) ở độ sâu 2 dù đặt giới hạn lên tới 6.
+* **Nguyên nhân cốt lõi**:
+  1. `Võ Nguyên Giáp` có **621 liên kết xuôi**. Do MediaWiki API trả về danh sách theo thứ tự từ điển A–Z (số/ngày tháng đứng đầu, chữ V đứng gần cuối), bài `Vật lý học` nằm ở **vị trí 559**. Kể cả khi lọc bỏ 73 bài ngày tháng rác, vẫn còn **486 bài viết** đứng trước nó.
+  2. Standard IDS sử dụng duyệt theo chiều sâu (DFS): Trước khi xét tới nhánh thứ 486 (`Vật lý học`), DFS phải đào sâu và mở rộng toàn bộ các nhánh con của 486 bài đứng trước (`ASP.NET`, `Alexandros Đại đế`, `Algérie`...). Với trung bình 275 liên kết/bài, Standard IDS cần duyệt qua hơn **133.000 nút** mới tới được `Vật lý học`.
+  3. Khi giới hạn an toàn là 2.000 nút, Standard IDS chỉ mới kịp duyệt qua 4 nhánh con đầu tiên thì đã chạm ngưỡng dừng.
+* **Bài học rút ra**: Trên các mạng thông tin khổng lồ như Wikipedia (hệ số phân nhánh $b \approx 300$), **Bidirectional Search** là giải pháp vượt trội bắt buộc để triệt tiêu số mũ từ $\mathcal{O}(b^d)$ xuống $\mathcal{O}(2 \cdot b^{d/2})$.
+
+### Hệ thống 4 phong cách hiển thị (Themes)
+
+Giao diện hỗ trợ 4 phong cách màu sắc tương thích hoàn toàn trên cả màn hình tối và sáng:
+
+1. **Cosmic Deep Space (Tối vũ trụ)**: Tông màu đen sâu thẳm `#0b0d17`, điểm xuyết ánh sáng Supernova Cyan `#00d2e6` và tím tinh vân `#a855f7`.
+2. **NieR: Automata (Sáng hoài niệm / YoRHa)**: Phong cách quân đội YoRHa tông màu be sáng `#e5e0d8`, viền xám olive nhạt và chữ nâu than tối, mang lại cảm giác dịu mắt.
+3. **Cyberpunk Slate (Tối công nghệ)**: Tông màu than chì phiến đêm `#0b0e14`, viền sắc nét `#2a354c`, ánh sáng Neon Sky `#38bdf8` và Emerald `#10b981`.
+4. **Clean Paper (Sáng tối giản)**: Tông màu giấy ngọc trai `#f8fafc`, nền thẻ trắng tinh khôi `#ffffff`, chữ sapphire đậm `#0f172a` với độ tương phản cao đạt chuẩn văn phòng.
+
+Bộ điều khiển CSS tiêm động xử lý đồng bộ toàn bộ thành phần giao diện Streamlit 1.65 (Selectbox, Combobox, Virtual Dropdown, NumberInput stepper buttons) để đảm bảo không bị lỗi chữ chìm hay ô đen trên nền sáng.
 
 ## Kiểm thử
 

@@ -1,6 +1,6 @@
 # Kế Hoạch Triển Khai: SixDegreesOfWiki - Hệ Thống Phân Tích Mức Độ Liên Kết Wikipedia Bằng Iterative Deepening Search (IDS)
 
-> **Ghi chú cập nhật 07/11/2026:** Đây là kế hoạch gốc. Hệ thống hiện dùng SQLite làm CSDL duy nhất; các mô tả MySQL/fallback dưới đây chỉ còn giá trị lịch sử. Xem [README.md](README.md) và [PROGRESS.md](PROGRESS.md) để biết trạng thái mã nguồn.
+> **Ghi chú cập nhật 09/11/2026:** Đây là tài liệu kế hoạch và thiết kế kiến trúc gốc. Hệ thống hiện dùng SQLite làm CSDL duy nhất, tích hợp hệ thống 4 Theme màu sắc toàn diện, thanh hành trình Connected Path Stepper với bộ icon SVG tự vẽ, và đồ thị PyVis Click-to-Wiki. Giới hạn bùng nổ tổ hợp của Standard IDS và ưu thế vượt trội của Bidirectional IDS đã được chứng minh thực nghiệm qua ca `Võ Nguyên Giáp → Siêu tân tinh`. Xem [README.md](README.md), [DEMO.md](DEMO.md) và [PROGRESS.md](PROGRESS.md) để biết trạng thái mới nhất của mã nguồn.
 
 > [!NOTE]
 > Dự án giải quyết bài toán kinh điển **Six Degrees of Wikipedia** (Tìm khoảng cách phân tách giữa 2 khái niệm bất kỳ trên bách khoa toàn thư Wikipedia) thông qua giải thuật **Iterative Deepening Search (IDS)** và biến thể tối ưu **Bidirectional IDS**, kết hợp lưu trữ đệm **MySQL** và giao diện trực quan **Streamlit**.

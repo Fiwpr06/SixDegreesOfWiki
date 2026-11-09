@@ -34,6 +34,27 @@ Số nút và thời gian có thể thay đổi theo Wikipedia và cache. Nếu 
 2. Lọc ngôn ngữ, chọn một phiên, rồi bấm **Tải báo cáo của phiên này**.
 3. Trong tab tìm kiếm, bấm **Tải báo cáo JSON** dưới kết quả hiện tại. File chứa đường đi, URL từng bài, chỉ số hiệu năng và trạng thái.
 
+## Demo 4: Trải nghiệm 4 Phong cách Giao diện & Đồ thị Tương tác Click-to-Wiki
+
+1. Ở thanh bên (Sidebar), tìm mục **Giao diện & Phong cách** và đổi giữa 4 Theme:
+   - **Cosmic Deep Space (Tối vũ trụ)**
+   - **NieR: Automata (Sáng hoài niệm / YoRHa)**
+   - **Cyberpunk Slate (Tối công nghệ)**
+   - **Clean Paper (Sáng tối giản)**
+2. Quan sát toàn bộ giao diện: nền canvas, thanh sidebar, các ô selectbox, nút bấm stepper `+ / -`, thẻ số liệu và đồ thị Vis.js lập tức đổi màu đồng bộ 100%.
+3. Trong phần kết quả tìm kiếm:
+   - Xem **Thanh hành trình liên kết (Connected Path Stepper)** với các icon SVG chuyên biệt (Khởi hành, Bước chuyển tiếp, Đích đến).
+   - Nhấp chuột trực tiếp vào bất kỳ nút nào trên đồ thị hoặc trên thanh hành trình để mở ngay bài viết trên Wikipedia trong tab mới.
+
+## Demo 5: Trường hợp thực nghiệm chuyên sâu (Võ Nguyên Giáp → Siêu tân tinh)
+
+1. Chọn ngôn ngữ **Tiếng Việt (`vi`)**, thuật toán **So sánh cả hai**, độ sâu tối đa **3**.
+2. Nhập bài bắt đầu `Võ Nguyên Giáp` (hoặc dán link `https://vi.wikipedia.org/wiki/Võ_Nguyên_Giáp`) và bài đích `Siêu tân tinh` (hoặc `https://vi.wikipedia.org/wiki/Siêu_tân_tinh`).
+3. Bấm **Bắt đầu phân tích liên kết**:
+   - **Bidirectional IDS**: Tìm thấy ngay đường đi `Võ Nguyên Giáp → Vật lý học → Siêu tân tinh` (độ sâu 2) chỉ sau **~600 nút thăm** và chưa tới **1 giây**. (Lưu ý: liên kết từ `Võ Nguyên Giáp` trỏ tới `Vật lý học` xuất hiện dưới dạng alias `[[vật lý học|lý]]` trong đoạn tiểu sử gia đình: *"ngành Toán - lý"*).
+   - **Standard IDS**: Dừng với trạng thái `node_limit` hoặc `timeout` do hiện tượng bùng nổ tổ hợp của DFS đơn hướng (nhánh `Vật lý học` nằm ở vần `V`, sau hơn 480 bài viết khác).
+4. Quan sát bảng đối chiếu hiệu năng để thấy rõ giá trị thực tiễn của giải thuật Bidirectional Search trên mạng thông tin thế giới thực.
+
 ## Kiểm thử và demo terminal
 
 ```powershell
