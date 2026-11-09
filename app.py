@@ -9,7 +9,7 @@ from config import Settings
 from core.bidirectional_ids import bidirectional_ids
 from core.ids_search import standard_ids
 from core.search_types import SearchLimits, SearchProgress, SearchResult
-from core.visualizer import graph_html
+from core.visualizer import global_theme_css, graph_html, path_stepper_html
 from core.wiki_api import WikiAPI, WikiAPIError
 from database import Database
 from database.history import list_searches, save_search
@@ -17,7 +17,7 @@ from utils.exporter import article_url, report_from_history, report_from_result,
 from utils.helpers import parse_article_reference
 
 
-st.set_page_config(page_title="Six Degrees of Wiki", page_icon="🔗", layout="wide")
+st.set_page_config(page_title="Six Degrees of Wiki", layout="wide")
 
 
 @st.cache_resource
@@ -52,7 +52,7 @@ def title_input(label: str, key: str, lang: str) -> str:
     return typed if chosen == "Dùng tên đã nhập" else chosen
 
 
-def render_result(result: SearchResult, index: int) -> None:
+def render_result(result: SearchResult, index: int, theme_key: str = "cosmic") -> None:
     st.subheader(result.algorithm)
     if result.status == "found":
         st.success("Đã tìm thấy đường đi ngắn nhất trong giới hạn tìm kiếm.")
@@ -72,10 +72,8 @@ def render_result(result: SearchResult, index: int) -> None:
     st.caption(f"Nút mở rộng: {result.expanded_nodes} · Cache hit/miss: {result.cache_hits}/{result.cache_misses}")
 
     if result.found:
-        st.markdown("**Đường đi:** " + " → ".join(result.path))
-        for step, title in enumerate(result.path):
-            st.link_button(f"{step}. {title}", article_url(title, result.lang))
-        st.iframe(graph_html(result), height=560)
+        st.html(path_stepper_html(result, theme_key))
+        st.iframe(graph_html(result, theme_key), height=580)
 
     st.download_button(
         "Tải báo cáo JSON", to_json(report_from_result(result)),
@@ -87,7 +85,8 @@ def render_result(result: SearchResult, index: int) -> None:
 def main() -> None:
     settings = Settings.from_env()
     database = get_database()
-    st.title("🔗 Six Degrees of Wiki")
+
+    st.title("Six Degrees of Wiki")
     st.caption("Tìm đường liên kết ngắn nhất giữa hai bài Wikipedia bằng Iterative Deepening Search")
 
     with st.sidebar:
@@ -104,6 +103,21 @@ def main() -> None:
                                       value=int(settings.default_timeout_seconds))
             max_nodes = st.number_input("Số nút thăm tối đa", min_value=10, max_value=100000,
                                         value=settings.default_max_visited_nodes, step=100)
+        st.subheader("Giao diện & Phong cách")
+        theme_names = {
+            "cosmic": "Cosmic Deep Space (Tối vũ trụ)",
+            "nier": "NieR: Automata (Sáng hoài niệm / YoRHa)",
+            "cyberpunk": "Cyberpunk Slate (Tối công nghệ)",
+            "paper": "Clean Paper (Sáng tối giản)",
+        }
+        theme_choice = st.selectbox(
+            "Phong cách hiển thị",
+            list(theme_names.keys()),
+            format_func=lambda k: theme_names[k],
+            index=0,
+            key="app_theme_selection",
+        )
+        st.html(global_theme_css(theme_choice))
         st.info(f"CSDL: SQLite · {settings.sqlite_path.name}")
 
     search_tab, history_tab = st.tabs(["Tìm kiếm", "Lịch sử & báo cáo"])
@@ -202,7 +216,7 @@ def main() -> None:
                 ], hide_index=True, width="stretch")
                 st.caption("Thuật toán thứ hai có thể hưởng lợi từ cache do thuật toán thứ nhất vừa tạo.")
             for index, result in enumerate(results):
-                render_result(result, index)
+                render_result(result, index, theme_choice)
                 if index < len(results) - 1:
                     st.divider()
 
